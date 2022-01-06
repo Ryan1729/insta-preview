@@ -3,7 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>Insta' Preview</title>
-  <style>body { padding: 0; margin: 0; background-color: #fafafa; color: #262626 }</style>
+  <style>
+    body { padding: 0; margin: 0; background-color: #fafafa; color: #262626 }
+    .profile {
+      grid-area: profile;
+    }
+    .cells {
+      grid-area: cells;
+      line-height: 0; /* remove descender gap between images */
+    }
+    #insta-preview-grid {
+      display: grid;
+      grid-template-columns: 10em 10em 10em;
+      grid-template-rows: auto;
+      grid-template-areas:
+        "profile profile profile"
+        "cells   cells   cells"
+        "cells   cells   cells"
+        "cells   cells   cells"
+        "cells   cells   cells";
+    }
+  </style>
 </head>
 <body>
     <div id="insta-preview"></div>

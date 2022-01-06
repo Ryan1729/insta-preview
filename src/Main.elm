@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Html exposing (div, img)
-import Html.Attributes exposing (src, style)
+import Html.Attributes exposing (class, id, src, style)
 
 
 redPixel =
@@ -16,19 +16,43 @@ bluePixel =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWMwDnr4HwAEiAJm7qe+oQAAAABJRU5ErkJggg=="
 
 
-image source =
+profile source =
+    img
+        [ src source
+        , class "profile"
+        , style "width" "30em"
+        , style "height" "20ex"
+        ]
+        []
+
+
+cell source =
     img
         [ src source
         , style "height" "20ex"
-        , style "width" "10em"
         ]
         []
 
 
 main =
     div
-        []
-        [ image redPixel
-        , image greenPixel
-        , image bluePixel
+        [ id "insta-preview-grid"
+        ]
+        [ profile bluePixel
+        , div
+            [ class "cells"
+            ]
+            [ cell redPixel
+            , cell greenPixel
+            , cell bluePixel
+            , cell redPixel
+            , cell greenPixel
+            , cell bluePixel
+            , cell redPixel
+            , cell greenPixel
+            , cell bluePixel
+            , cell redPixel
+            , cell greenPixel
+            , cell bluePixel
+            ]
         ]
