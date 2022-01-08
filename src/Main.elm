@@ -106,6 +106,45 @@ type ImageIndex
     | Eleven
 
 
+toInt index =
+    case index of
+        Zero ->
+            0
+
+        One ->
+            1
+
+        Two ->
+            2
+
+        Three ->
+            3
+
+        Four ->
+            4
+
+        Five ->
+            5
+
+        Six ->
+            6
+
+        Seven ->
+            7
+
+        Eight ->
+            8
+
+        Nine ->
+            9
+
+        Ten ->
+            10
+
+        Eleven ->
+            11
+
+
 type ImageLocation
     = Profile
     | Cell ImageIndex
@@ -214,7 +253,7 @@ replace location source model =
 view : Model -> Html Msg
 view model =
     div
-        [ id "insta-preview-grid"
+        [ class "insta-preview-grid"
         ]
         [ profile model.profile
         , div
@@ -248,28 +287,11 @@ bluePixel =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWMwDnr4HwAEiAJm7qe+oQAAAABJRU5ErkJggg=="
 
 
-profileWidth =
-    style "width" "30rem"
-
-
-profileHeight =
-    cellHeight
-
-
-cellWidth =
-    style "width" "10rem"
-
-
-cellHeight =
-    style "height" "10rem"
-
-
 profile imageState =
     case imageState of
         Nothing ->
             button
-                [ profileWidth
-                , profileHeight
+                [ class "insta-preview-profile"
                 , onClick (ImageRequested (Replace Profile))
                 ]
                 [ text "upload image" ]
@@ -277,19 +299,25 @@ profile imageState =
         Just source ->
             img
                 [ src source
-                , class "profile"
-                , profileWidth
-                , profileHeight
+                , class "insta-preview-profile"
                 ]
                 []
 
 
+cellClass =
+    class "insta-preview-cell"
+
+
 cell index imageState =
+    let
+        cellIndexClass =
+            class ("insta-preview-cell" ++ String.fromInt (toInt index))
+    in
     case imageState of
         Nothing ->
             button
-                [ cellWidth
-                , cellHeight
+                [ cellClass
+                , cellIndexClass
                 , onClick (ImageRequested (Replace (Cell index)))
                 ]
                 [ text "upload image" ]
@@ -297,8 +325,8 @@ cell index imageState =
         Just source ->
             img
                 [ src source
-                , cellWidth
-                , cellHeight
+                , cellClass
+                , cellIndexClass
                 ]
                 []
 
