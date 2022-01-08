@@ -253,25 +253,21 @@ replace location source model =
 view : Model -> Html Msg
 view model =
     div
-        [ class "insta-preview-grid"
+        [ absoluteContainerClass
         ]
         [ profile model.profile
-        , div
-            [ class "cells"
-            ]
-            [ cell Zero model.cell0
-            , cell One model.cell1
-            , cell Two model.cell2
-            , cell Three model.cell3
-            , cell Four model.cell4
-            , cell Five model.cell5
-            , cell Six model.cell6
-            , cell Seven model.cell7
-            , cell Eight model.cell8
-            , cell Nine model.cell9
-            , cell Ten model.cell10
-            , cell Eleven model.cell11
-            ]
+        , cell Zero model.cell0
+        , cell One model.cell1
+        , cell Two model.cell2
+        , cell Three model.cell3
+        , cell Four model.cell4
+        , cell Five model.cell5
+        , cell Six model.cell6
+        , cell Seven model.cell7
+        , cell Eight model.cell8
+        , cell Nine model.cell9
+        , cell Ten model.cell10
+        , cell Eleven model.cell11
         ]
 
 
@@ -291,7 +287,8 @@ profile imageState =
     case imageState of
         Nothing ->
             button
-                [ class "insta-preview-profile"
+                [ absoluteClass
+                , class "insta-preview-profile"
                 , onClick (ImageRequested (Replace Profile))
                 ]
                 [ text "upload image" ]
@@ -299,13 +296,49 @@ profile imageState =
         Just source ->
             img
                 [ src source
+                , absoluteClass
                 , class "insta-preview-profile"
                 ]
                 []
 
 
+absoluteClass =
+    class "absolute"
+
+
+absoluteContainerClass =
+    class "absolute-container"
+
+fullSizeClass =
+    class "full-size"
+
 cellClass =
     class "insta-preview-cell"
+
+
+cellSizeClass =
+    class "insta-preview-cell-size"
+
+
+cellUploadButton index =
+    let
+        cellIndexClass =
+            class ("insta-preview-cell" ++ String.fromInt (toInt index))
+    in
+    button
+        [ fullSizeClass
+        , absoluteClass
+        , onClick (ImageRequested (Replace (Cell index)))
+        ]
+        [ text "upload image" ]
+
+
+overlayClass =
+    class "overlay"
+
+
+overlayContainerClass =
+    class "overlay-container"
 
 
 cell index imageState =
@@ -313,22 +346,32 @@ cell index imageState =
         cellIndexClass =
             class ("insta-preview-cell" ++ String.fromInt (toInt index))
     in
-    case imageState of
-        Nothing ->
-            button
-                [ cellClass
-                , cellIndexClass
-                , onClick (ImageRequested (Replace (Cell index)))
+    div
+        [ absoluteClass
+        , cellSizeClass
+        , cellIndexClass
+        , overlayContainerClass
+        ]
+        (case imageState of
+            Nothing ->
+                [ cellUploadButton index
                 ]
-                [ text "upload image" ]
 
-        Just source ->
-            img
-                [ src source
-                , cellClass
-                , cellIndexClass
+            Just source ->
+                [ img
+                    [ src source
+                    , absoluteClass
+                    , cellSizeClass
+                    ]
+                    []
+                , div
+                    [ absoluteClass
+                    , overlayClass
+                    ]
+                    [ cellUploadButton index
+                    ]
                 ]
-                []
+        )
 
 
 
