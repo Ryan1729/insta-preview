@@ -309,8 +309,10 @@ absoluteClass =
 absoluteContainerClass =
     class "absolute-container"
 
+
 fullSizeClass =
     class "full-size"
+
 
 cellClass =
     class "insta-preview-cell"
@@ -326,7 +328,7 @@ cellUploadButton index =
             class ("insta-preview-cell" ++ String.fromInt (toInt index))
     in
     button
-        [ fullSizeClass
+        [ cellSizeClass --fullSizeClass
         , absoluteClass
         , onClick (ImageRequested (Replace (Cell index)))
         ]
