@@ -145,17 +145,53 @@ toInt index =
             11
 
 
+saturatingInc index =
+    case index of
+        Zero ->
+            One
+
+        One ->
+            Two
+
+        Two ->
+            Three
+
+        Three ->
+            Four
+
+        Four ->
+            Five
+
+        Five ->
+            Six
+
+        Six ->
+            Seven
+
+        Seven ->
+            Eight
+
+        Eight ->
+            Nine
+
+        Nine ->
+            Ten
+
+        Ten ->
+            Eleven
+
+        Eleven ->
+            Eleven
+
+
 type ImageLocation
     = Profile
     | Cell ImageIndex
 
 
-
--- TODO `ShiftDown ImageIndex`
-
-
 type ImageAction
     = Replace ImageLocation
+    | ShiftDown ImageIndex
 
 
 type Msg
@@ -197,6 +233,9 @@ update msg model =
             ( case action of
                 Replace location ->
                     replace location url model
+
+                ShiftDown index ->
+                    shiftDown index url model
             , Cmd.none
             )
 
@@ -244,6 +283,96 @@ replace location source model =
             { model | cell11 = Just source }
 
 
+copyDown : ImageIndex -> Model -> Model
+copyDown index model =
+    case index of
+        Zero ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell1 = new.cell0 }
+
+        One ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell2 = new.cell1 }
+
+        Two ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell3 = new.cell2 }
+
+        Three ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell4 = new.cell3 }
+
+        Four ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell5 = new.cell4 }
+
+        Five ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell6 = new.cell5 }
+
+        Six ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell7 = new.cell6 }
+
+        Seven ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell8 = new.cell7 }
+
+        Eight ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell9 = new.cell8 }
+
+        Nine ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell10 = new.cell9 }
+
+        Ten ->
+            let
+                new =
+                    copyDown (saturatingInc index) model
+            in
+            { new | cell11 = new.cell10 }
+
+        Eleven ->
+            model
+
+
+shiftDown : ImageIndex -> ImageSource -> Model -> Model
+shiftDown index source model =
+    copyDown index model
+        |> replace (Cell index) source
+
+
 
 --
 -- VIEW
@@ -284,6 +413,7 @@ bluePixel =
 
 
 profile imageState =
+    -- TODO allow changing this after first upload
     case imageState of
         Nothing ->
             button
@@ -318,15 +448,15 @@ cellSizeClass =
     class "insta-preview-cell-size"
 
 
+cellReplaceOnClick index =
+    onClick (ImageRequested (Replace (Cell index)))
+
+
 cellUploadButton index =
-    let
-        cellIndexClass =
-            class ("insta-preview-cell" ++ String.fromInt (toInt index))
-    in
     button
         [ cellSizeClass
         , absoluteClass
-        , onClick (ImageRequested (Replace (Cell index)))
+        , cellReplaceOnClick index
         ]
         [ text "upload image" ]
 
@@ -337,6 +467,31 @@ overlayClass =
 
 overlayContainerClass =
     class "overlay-container"
+
+
+cellOverlay index =
+    let
+        cellOverlayButtonSizeClass =
+            class "cell-overlay-button-size"
+    in
+    div
+        [ absoluteClass
+        , overlayClass
+        ]
+        [ button
+            [ cellOverlayButtonSizeClass
+            , absoluteClass
+            , cellReplaceOnClick index
+            ]
+            [ text "replace image" ]
+        , button
+            [ cellOverlayButtonSizeClass
+            , absoluteClass
+            , onClick (ImageRequested (ShiftDown index))
+            , class "cell-overlay-button1"
+            ]
+            [ text "shift down" ]
+        ]
 
 
 cell index imageState =
@@ -362,12 +517,7 @@ cell index imageState =
                     , cellSizeClass
                     ]
                     []
-                , div
-                    [ absoluteClass
-                    , overlayClass
-                    ]
-                    [ cellUploadButton index
-                    ]
+                , cellOverlay index
                 ]
         )
 
