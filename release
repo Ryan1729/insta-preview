@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cp --verbose index.html ./live/index.html
-cp --verbose elm.js ./live/elm.js
+cp --verbose index.html ./docs/index.html
+cp --verbose elm.js ./docs/elm.js
