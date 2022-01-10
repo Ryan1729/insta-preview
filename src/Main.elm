@@ -413,23 +413,42 @@ bluePixel =
 
 
 profile imageState =
-    -- TODO allow changing this after first upload
-    case imageState of
-        Nothing ->
+    let
+        profileSizeClass =
+            class "insta-preview-profile"
+
+        replaceButton =
             button
                 [ absoluteClass
-                , class "insta-preview-profile"
+                , profileSizeClass
                 , onClick (ImageRequested (Replace Profile))
                 ]
                 [ text "upload image" ]
-
-        Just source ->
-            img
-                [ src source
-                , absoluteClass
-                , class "insta-preview-profile"
+    in
+    div
+        [ absoluteClass
+        , profileSizeClass
+        , overlayContainerClass
+        ]
+        (case imageState of
+            Nothing ->
+                [ replaceButton
                 ]
-                []
+
+            Just source ->
+                [ img
+                    [ src source
+                    , absoluteClass
+                    , profileSizeClass
+                    ]
+                    []
+                , div
+                    [ absoluteClass
+                    , overlayClass
+                    ]
+                    [ replaceButton ]
+                ]
+        )
 
 
 absoluteClass =
