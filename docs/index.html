@@ -5,6 +5,23 @@
   <title>Insta' Preview</title>
   <style>
     body { padding: 0; margin: 0; background-color: #fafafa; color: #262626 }
+    :root {
+      /* As of this writing, the elm code implicitly assumes these values. */
+      --cell-columns: 3;
+      --cell-rows: 4;
+      /* These should be changable without changing the elm code. */
+      --cell-width: 10rem;
+      --cell-height: 10rem;
+      --profile-width: calc(var(--cell-width) * var(--cell-columns));
+      --profile-height: 35rem;
+      --column0-left: 0;
+      --column1-left: var(--cell-width);
+      --column2-left: calc(var(--cell-width) * 2);
+      --row0-top: var(--profile-height);
+      --row1-top: calc(var(--row0-top) + var(--cell-height));
+      --row2-top: calc(var(--row0-top) + var(--cell-height) * 2);
+      --row3-top: calc(var(--row0-top) + var(--cell-height) * 3);
+    }
     /*
       We want to use `position: absolute` on the children of the grid.
       "If the position property is absolute, the containing block is formed by the edge of the padding box of the nearest ancestor element that has a position value other than static (fixed, absolute, relative, or sticky)."
@@ -23,56 +40,60 @@
       position: absolute;
     }
     .insta-preview-profile {
-      width: 30rem;
-      height: 10rem;
+      width: var(--profile-width);
+      height: var(--profile-height);
     }
     .insta-preview-cell-size {
-      width: 10rem;
-      height: 10rem;
+      width: var(--cell-width);
+      height: var(--cell-height);
     }
     .insta-preview-cell0 {
-      top: 10rem;
+      top: var(--row0-top);
+      left: var(--column0-left)
     }
     .insta-preview-cell1 {
-      top: 10rem;
-      left: 10rem;
+      top: var(--row0-top);
+      left: var(--column1-left);
     }
     .insta-preview-cell2 {
-      top: 10rem;
-      left: 20rem;
+      top: var(--row0-top);
+      left: var(--column2-left);
     }
     .insta-preview-cell3 {
-      top: 20rem;
+      top: var(--row1-top);
+      left: var(--column0-left)
     }
     .insta-preview-cell4 {
-      top: 20rem;
-      left: 10rem;
+      top: var(--row1-top);
+      left: var(--column1-left)
     }
     .insta-preview-cell5 {
-      top: 20rem;
-      left: 20rem;
+      top: var(--row1-top);
+      left: var(--column2-left)
     }
     .insta-preview-cell6 {
-      top: 30rem;
+      top: var(--row2-top);
+      left: var(--column0-left)
     }
     .insta-preview-cell7 {
-      top: 30rem;
-      left: 10rem;
+      top: var(--row2-top);
+      left: var(--column1-left)
     }
     .insta-preview-cell8 {
-      top: 30rem;
-      left: 20rem;
+      top: var(--row2-top);
+      left: var(--column2-left)
     }
     .insta-preview-cell9 {
-      top: 40rem;
+      top: var(--row3-top);
+      left: var(--column0-left)
     }
     .insta-preview-cell10 {
-      top: 40rem;
-      left: 10rem;
+      top: var(--row3-top);
+      left: var(--column1-left)
     }
     .insta-preview-cell11 {
-      top: 40rem;
-      left: 20rem;
+      top: var(--row3-top);
+      left: var(--column2-left)
     }
     .overlay {
       position: absolute;
