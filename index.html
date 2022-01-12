@@ -117,9 +117,22 @@
 </body>
 <script type="text/javascript" src="elm.js"></script>
 <script type="text/javascript">
-// Start the Elm application.
-var app = Elm.Main.init({
-    node: document.getElementById('insta-preview'),
-});
+function loadPreviousImagesIfAny(callback) {
+    // TOD0 load from indexedDB
+    callback({})
+}
+  
+loadPreviousImagesIfAny((loadedImages) => {
+    // Start the Elm application.
+    var app = Elm.Main.init({
+        node: document.getElementById('insta-preview'),
+        flags: loadedImages
+    });
+
+    app.ports.saveImages.subscribe(function(images) {
+      // TOD0 save images to indexedDB, as Blobs
+      console.log(images)
+    });
+})
 </script>
 </html>

@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Browser
 import File exposing (File)
@@ -6,7 +6,26 @@ import File.Select as Select
 import Html exposing (Html, button, div, img, p, text)
 import Html.Attributes exposing (class, id, src, style)
 import Html.Events exposing (onClick)
+import Json.Decode as D
+import Json.Encode as E
 import Task
+
+
+type alias FlagsValue =
+    E.Value
+
+
+type alias ModelValue =
+    E.Value
+
+
+
+--
+-- PORTS
+--
+
+
+port saveImages : ModelValue -> Cmd msg
 
 
 
@@ -15,7 +34,7 @@ import Task
 --
 
 
-main : Program () Model Msg
+main : Program FlagsValue Model Msg
 main =
     Browser.element
         { init = init
@@ -65,24 +84,73 @@ type alias Model =
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( { profile = imageDefault
-      , cell0 = imageDefault
-      , cell1 = imageDefault
-      , cell2 = imageDefault
-      , cell3 = imageDefault
-      , cell4 = imageDefault
-      , cell5 = imageDefault
-      , cell6 = imageDefault
-      , cell7 = imageDefault
-      , cell8 = imageDefault
-      , cell9 = imageDefault
-      , cell10 = imageDefault
-      , cell11 = imageDefault
-      }
+init : E.Value -> ( Model, Cmd Msg )
+init flags =
+    ( case D.decodeValue flagsDecoder flags of
+        Ok model ->
+            model
+
+        Err _ ->
+            { profile = imageDefault
+            , cell0 = imageDefault
+            , cell1 = imageDefault
+            , cell2 = imageDefault
+            , cell3 = imageDefault
+            , cell4 = imageDefault
+            , cell5 = imageDefault
+            , cell6 = imageDefault
+            , cell7 = imageDefault
+            , cell8 = imageDefault
+            , cell9 = imageDefault
+            , cell10 = imageDefault
+            , cell11 = imageDefault
+            }
     , Cmd.none
     )
+
+
+flagsDecoder : D.Decoder Model
+flagsDecoder =
+    let
+        andMap : D.Decoder a -> D.Decoder (a -> value) -> D.Decoder value
+        andMap =
+            D.map2 (|>)
+
+        imageStateDecoder : D.Decoder ImageState
+        imageStateDecoder =
+            -- TODO check that it looks like a URL?
+            D.maybe D.string
+
+        fieldFor location =
+            D.field (locationKey location) imageStateDecoder
+    in
+    D.succeed Model
+        |> andMap (fieldFor Profile)
+        |> andMap (fieldFor (Cell Zero))
+        |> andMap (fieldFor (Cell One))
+        |> andMap (fieldFor (Cell Two))
+        |> andMap (fieldFor (Cell Three))
+        |> andMap (fieldFor (Cell Four))
+        |> andMap (fieldFor (Cell Five))
+        |> andMap (fieldFor (Cell Six))
+        |> andMap (fieldFor (Cell Seven))
+        |> andMap (fieldFor (Cell Eight))
+        |> andMap (fieldFor (Cell Nine))
+        |> andMap (fieldFor (Cell Ten))
+        |> andMap (fieldFor (Cell Eleven))
+
+
+modelEncoder : Model -> E.Value
+modelEncoder model =
+    let
+        extractPair : ImageLocation -> Maybe ( String, E.Value )
+        extractPair location =
+            getImage location model
+                |> Maybe.map (\url -> ( locationKey location, E.string url ))
+    in
+    allLocations
+        |> List.filterMap extractPair
+        |> E.object
 
 
 
@@ -189,6 +257,131 @@ type ImageLocation
     | Cell ImageIndex
 
 
+allLocations : List ImageLocation
+allLocations =
+    [ Profile
+    , Cell Zero
+    , Cell One
+    , Cell Two
+    , Cell Three
+    , Cell Four
+    , Cell Five
+    , Cell Six
+    , Cell Seven
+    , Cell Eight
+    , Cell Nine
+    , Cell Ten
+    , Cell Eleven
+    ]
+
+
+allLocationStrings =
+    [ "profile"
+    , "cell0"
+    , "cell1"
+    , "cell2"
+    , "cell3"
+    , "cell4"
+    , "cell5"
+    , "cell6"
+    , "cell7"
+    , "cell8"
+    , "cell9"
+    , "cell10"
+    , "cell11"
+    ]
+
+
+type alias Key =
+    String
+
+
+locationKey : ImageLocation -> Key
+locationKey location =
+    case location of
+        Profile ->
+            "profile"
+
+        Cell Zero ->
+            "cell0"
+
+        Cell One ->
+            "cell1"
+
+        Cell Two ->
+            "cell2"
+
+        Cell Three ->
+            "cell3"
+
+        Cell Four ->
+            "cell4"
+
+        Cell Five ->
+            "cell5"
+
+        Cell Six ->
+            "cell6"
+
+        Cell Seven ->
+            "cell7"
+
+        Cell Eight ->
+            "cell8"
+
+        Cell Nine ->
+            "cell9"
+
+        Cell Ten ->
+            "cell10"
+
+        Cell Eleven ->
+            "cell11"
+
+
+getImage : ImageLocation -> Model -> ImageState
+getImage location model =
+    case location of
+        Profile ->
+            model.profile
+
+        Cell Zero ->
+            model.cell0
+
+        Cell One ->
+            model.cell1
+
+        Cell Two ->
+            model.cell2
+
+        Cell Three ->
+            model.cell3
+
+        Cell Four ->
+            model.cell4
+
+        Cell Five ->
+            model.cell5
+
+        Cell Six ->
+            model.cell6
+
+        Cell Seven ->
+            model.cell7
+
+        Cell Eight ->
+            model.cell8
+
+        Cell Nine ->
+            model.cell9
+
+        Cell Ten ->
+            model.cell10
+
+        Cell Eleven ->
+            model.cell11
+
+
 type ImageAction
     = Replace ImageLocation
     | ShiftDown ImageIndex
@@ -230,13 +423,17 @@ update msg model =
             )
 
         ImageUrl action url ->
-            ( case action of
-                Replace location ->
-                    replace location url model
+            let
+                newModel =
+                    case action of
+                        Replace location ->
+                            replace location url model
 
-                ShiftDown index ->
-                    shiftDown index url model
-            , Cmd.none
+                        ShiftDown index ->
+                            shiftDown index url model
+            in
+            ( newModel
+            , modelEncoder newModel |> saveImages
             )
 
 
@@ -381,22 +578,27 @@ shiftDown index source model =
 
 view : Model -> Html Msg
 view model =
+    let
+        cellView index =
+            getImage (Cell index) model
+                |> cell index
+    in
     div
         [ absoluteContainerClass
         ]
-        [ profile model.profile
-        , cell Zero model.cell0
-        , cell One model.cell1
-        , cell Two model.cell2
-        , cell Three model.cell3
-        , cell Four model.cell4
-        , cell Five model.cell5
-        , cell Six model.cell6
-        , cell Seven model.cell7
-        , cell Eight model.cell8
-        , cell Nine model.cell9
-        , cell Ten model.cell10
-        , cell Eleven model.cell11
+        [ getImage Profile model |> profile
+        , cellView Zero
+        , cellView One
+        , cellView Two
+        , cellView Three
+        , cellView Four
+        , cellView Five
+        , cellView Six
+        , cellView Seven
+        , cellView Eight
+        , cellView Nine
+        , cellView Ten
+        , cellView Eleven
         ]
 
 
