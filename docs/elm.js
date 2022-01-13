@@ -5316,12 +5316,186 @@ var $elm$core$Task$perform = F2(
 			A2($elm$core$Task$map, toMessage, task));
 	});
 var $elm$browser$Browser$element = _Browser_element;
+var $elm$json$Json$Decode$decodeValue = _Json_run;
+var $author$project$Main$Cell = function (a) {
+	return {$: 1, a: a};
+};
+var $author$project$Main$Eight = 8;
+var $author$project$Main$Eleven = 11;
+var $author$project$Main$Five = 5;
+var $author$project$Main$Four = 4;
+var $author$project$Main$Model = function (profile) {
+	return function (cell0) {
+		return function (cell1) {
+			return function (cell2) {
+				return function (cell3) {
+					return function (cell4) {
+						return function (cell5) {
+							return function (cell6) {
+								return function (cell7) {
+									return function (cell8) {
+										return function (cell9) {
+											return function (cell10) {
+												return function (cell11) {
+													return {J: cell0, v: cell1, w: cell10, K: cell11, x: cell2, y: cell3, z: cell4, A: cell5, B: cell6, C: cell7, D: cell8, E: cell9, Q: profile};
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var $author$project$Main$Nine = 9;
+var $author$project$Main$One = 1;
+var $author$project$Main$Profile = {$: 0};
+var $author$project$Main$Seven = 7;
+var $author$project$Main$Six = 6;
+var $author$project$Main$Ten = 10;
+var $author$project$Main$Three = 3;
+var $author$project$Main$Two = 2;
+var $author$project$Main$Zero = 0;
+var $elm$json$Json$Decode$field = _Json_decodeField;
 var $author$project$Main$imageDefault = $elm$core$Maybe$Nothing;
+var $author$project$Main$locationKey = function (location) {
+	if (!location.$) {
+		return 'profile';
+	} else {
+		switch (location.a) {
+			case 0:
+				var _v1 = location.a;
+				return 'cell0';
+			case 1:
+				var _v2 = location.a;
+				return 'cell1';
+			case 2:
+				var _v3 = location.a;
+				return 'cell2';
+			case 3:
+				var _v4 = location.a;
+				return 'cell3';
+			case 4:
+				var _v5 = location.a;
+				return 'cell4';
+			case 5:
+				var _v6 = location.a;
+				return 'cell5';
+			case 6:
+				var _v7 = location.a;
+				return 'cell6';
+			case 7:
+				var _v8 = location.a;
+				return 'cell7';
+			case 8:
+				var _v9 = location.a;
+				return 'cell8';
+			case 9:
+				var _v10 = location.a;
+				return 'cell9';
+			case 10:
+				var _v11 = location.a;
+				return 'cell10';
+			default:
+				var _v12 = location.a;
+				return 'cell11';
+		}
+	}
+};
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$maybe = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
+				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
+			]));
+};
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $author$project$Main$flagsDecoder = function () {
+	var imageStateDecoder = $elm$json$Json$Decode$maybe($elm$json$Json$Decode$string);
+	var fieldFor = function (location) {
+		return $elm$json$Json$Decode$oneOf(
+			_List_fromArray(
+				[
+					A2(
+					$elm$json$Json$Decode$field,
+					$author$project$Main$locationKey(location),
+					imageStateDecoder),
+					$elm$json$Json$Decode$succeed($author$project$Main$imageDefault)
+				]));
+	};
+	var andMap = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
+	return A2(
+		andMap,
+		fieldFor(
+			$author$project$Main$Cell(11)),
+		A2(
+			andMap,
+			fieldFor(
+				$author$project$Main$Cell(10)),
+			A2(
+				andMap,
+				fieldFor(
+					$author$project$Main$Cell(9)),
+				A2(
+					andMap,
+					fieldFor(
+						$author$project$Main$Cell(8)),
+					A2(
+						andMap,
+						fieldFor(
+							$author$project$Main$Cell(7)),
+						A2(
+							andMap,
+							fieldFor(
+								$author$project$Main$Cell(6)),
+							A2(
+								andMap,
+								fieldFor(
+									$author$project$Main$Cell(5)),
+								A2(
+									andMap,
+									fieldFor(
+										$author$project$Main$Cell(4)),
+									A2(
+										andMap,
+										fieldFor(
+											$author$project$Main$Cell(3)),
+										A2(
+											andMap,
+											fieldFor(
+												$author$project$Main$Cell(2)),
+											A2(
+												andMap,
+												fieldFor(
+													$author$project$Main$Cell(1)),
+												A2(
+													andMap,
+													fieldFor(
+														$author$project$Main$Cell(0)),
+													A2(
+														andMap,
+														fieldFor($author$project$Main$Profile),
+														$elm$json$Json$Decode$succeed($author$project$Main$Model))))))))))))));
+}();
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Main$init = function (_v0) {
+var $author$project$Main$init = function (flags) {
 	return _Utils_Tuple2(
-		{J: $author$project$Main$imageDefault, v: $author$project$Main$imageDefault, w: $author$project$Main$imageDefault, K: $author$project$Main$imageDefault, x: $author$project$Main$imageDefault, y: $author$project$Main$imageDefault, z: $author$project$Main$imageDefault, A: $author$project$Main$imageDefault, B: $author$project$Main$imageDefault, C: $author$project$Main$imageDefault, D: $author$project$Main$imageDefault, E: $author$project$Main$imageDefault, Q: $author$project$Main$imageDefault},
+		function () {
+			var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$Main$flagsDecoder, flags);
+			if (!_v0.$) {
+				var model = _v0.a;
+				return model;
+			} else {
+				return {J: $author$project$Main$imageDefault, v: $author$project$Main$imageDefault, w: $author$project$Main$imageDefault, K: $author$project$Main$imageDefault, x: $author$project$Main$imageDefault, y: $author$project$Main$imageDefault, z: $author$project$Main$imageDefault, A: $author$project$Main$imageDefault, B: $author$project$Main$imageDefault, C: $author$project$Main$imageDefault, D: $author$project$Main$imageDefault, E: $author$project$Main$imageDefault, Q: $author$project$Main$imageDefault};
+			}
+		}(),
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -5348,6 +5522,123 @@ var $elm$file$File$Select$file = F2(
 	});
 var $author$project$Main$imageTypes = _List_fromArray(
 	['image/apng', 'image/avif', 'image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp']);
+var $author$project$Main$allLocations = _List_fromArray(
+	[
+		$author$project$Main$Profile,
+		$author$project$Main$Cell(0),
+		$author$project$Main$Cell(1),
+		$author$project$Main$Cell(2),
+		$author$project$Main$Cell(3),
+		$author$project$Main$Cell(4),
+		$author$project$Main$Cell(5),
+		$author$project$Main$Cell(6),
+		$author$project$Main$Cell(7),
+		$author$project$Main$Cell(8),
+		$author$project$Main$Cell(9),
+		$author$project$Main$Cell(10),
+		$author$project$Main$Cell(11)
+	]);
+var $elm$core$List$maybeCons = F3(
+	function (f, mx, xs) {
+		var _v0 = f(mx);
+		if (!_v0.$) {
+			var x = _v0.a;
+			return A2($elm$core$List$cons, x, xs);
+		} else {
+			return xs;
+		}
+	});
+var $elm$core$List$filterMap = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			$elm$core$List$maybeCons(f),
+			_List_Nil,
+			xs);
+	});
+var $author$project$Main$getImage = F2(
+	function (location, model) {
+		if (!location.$) {
+			return model.Q;
+		} else {
+			switch (location.a) {
+				case 0:
+					var _v1 = location.a;
+					return model.J;
+				case 1:
+					var _v2 = location.a;
+					return model.v;
+				case 2:
+					var _v3 = location.a;
+					return model.x;
+				case 3:
+					var _v4 = location.a;
+					return model.y;
+				case 4:
+					var _v5 = location.a;
+					return model.z;
+				case 5:
+					var _v6 = location.a;
+					return model.A;
+				case 6:
+					var _v7 = location.a;
+					return model.B;
+				case 7:
+					var _v8 = location.a;
+					return model.C;
+				case 8:
+					var _v9 = location.a;
+					return model.D;
+				case 9:
+					var _v10 = location.a;
+					return model.E;
+				case 10:
+					var _v11 = location.a;
+					return model.w;
+				default:
+					var _v12 = location.a;
+					return model.K;
+			}
+		}
+	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v0, obj) {
+					var k = _v0.a;
+					var v = _v0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(0),
+			pairs));
+};
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $author$project$Main$modelEncoder = function (model) {
+	var extractPair = function (location) {
+		return A2(
+			$elm$core$Maybe$map,
+			function (url) {
+				return _Utils_Tuple2(
+					$author$project$Main$locationKey(location),
+					$elm$json$Json$Encode$string(url));
+			},
+			A2($author$project$Main$getImage, location, model));
+	};
+	return $elm$json$Json$Encode$object(
+		A2($elm$core$List$filterMap, extractPair, $author$project$Main$allLocations));
+};
 var $author$project$Main$replace = F3(
 	function (location, source, model) {
 		if (!location.$) {
@@ -5445,20 +5736,7 @@ var $author$project$Main$replace = F3(
 			}
 		}
 	});
-var $author$project$Main$Cell = function (a) {
-	return {$: 1, a: a};
-};
-var $author$project$Main$Eight = 8;
-var $author$project$Main$Eleven = 11;
-var $author$project$Main$Five = 5;
-var $author$project$Main$Four = 4;
-var $author$project$Main$Nine = 9;
-var $author$project$Main$One = 1;
-var $author$project$Main$Seven = 7;
-var $author$project$Main$Six = 6;
-var $author$project$Main$Ten = 10;
-var $author$project$Main$Three = 3;
-var $author$project$Main$Two = 2;
+var $author$project$Main$saveImages = _Platform_outgoingPort('saveImages', $elm$core$Basics$identity);
 var $author$project$Main$saturatingInc = function (index) {
 	switch (index) {
 		case 0:
@@ -5614,21 +5892,22 @@ var $author$project$Main$update = F2(
 			default:
 				var action = msg.a;
 				var url = msg.b;
+				var newModel = function () {
+					if (!action.$) {
+						var location = action.a;
+						return A3($author$project$Main$replace, location, url, model);
+					} else {
+						var index = action.a;
+						return A3($author$project$Main$shiftDown, index, url, model);
+					}
+				}();
 				return _Utils_Tuple2(
-					function () {
-						if (!action.$) {
-							var location = action.a;
-							return A3($author$project$Main$replace, location, url, model);
-						} else {
-							var index = action.a;
-							return A3($author$project$Main$shiftDown, index, url, model);
-						}
-					}(),
-					$elm$core$Platform$Cmd$none);
+					newModel,
+					$author$project$Main$saveImages(
+						$author$project$Main$modelEncoder(newModel)));
 		}
 	});
-var $author$project$Main$Zero = 0;
-var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$json$Json$Decode$value = _Json_decodeValue;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -5797,7 +6076,6 @@ var $author$project$Main$cell = F2(
 				}
 			}());
 	});
-var $author$project$Main$Profile = {$: 0};
 var $author$project$Main$profile = function (imageState) {
 	var profileSizeClass = $elm$html$Html$Attributes$class('insta-preview-profile');
 	var replaceButton = A2(
@@ -5846,28 +6124,37 @@ var $author$project$Main$profile = function (imageState) {
 		}());
 };
 var $author$project$Main$view = function (model) {
+	var cellView = function (index) {
+		return A2(
+			$author$project$Main$cell,
+			index,
+			A2(
+				$author$project$Main$getImage,
+				$author$project$Main$Cell(index),
+				model));
+	};
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[$author$project$Main$absoluteContainerClass]),
 		_List_fromArray(
 			[
-				$author$project$Main$profile(model.Q),
-				A2($author$project$Main$cell, 0, model.J),
-				A2($author$project$Main$cell, 1, model.v),
-				A2($author$project$Main$cell, 2, model.x),
-				A2($author$project$Main$cell, 3, model.y),
-				A2($author$project$Main$cell, 4, model.z),
-				A2($author$project$Main$cell, 5, model.A),
-				A2($author$project$Main$cell, 6, model.B),
-				A2($author$project$Main$cell, 7, model.C),
-				A2($author$project$Main$cell, 8, model.D),
-				A2($author$project$Main$cell, 9, model.E),
-				A2($author$project$Main$cell, 10, model.w),
-				A2($author$project$Main$cell, 11, model.K)
+				$author$project$Main$profile(
+				A2($author$project$Main$getImage, $author$project$Main$Profile, model)),
+				cellView(0),
+				cellView(1),
+				cellView(2),
+				cellView(3),
+				cellView(4),
+				cellView(5),
+				cellView(6),
+				cellView(7),
+				cellView(8),
+				cellView(9),
+				cellView(10),
+				cellView(11)
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{aG: $author$project$Main$init, aM: $author$project$Main$subscriptions, aO: $author$project$Main$update, aP: $author$project$Main$view});
-_Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(0))(0)}});}(this));
+_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)(0)}});}(this));
