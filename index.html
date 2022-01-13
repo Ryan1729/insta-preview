@@ -117,29 +117,35 @@
 </body>
 <script type="text/javascript" src="elm.js"></script>
 <script type="text/javascript">
+var DB_NAME = "insta-preview";
+var DB_STORE = "insta-preview";
+var DB_VERSION = 1.0;
+
+function onupgradeneededMaker(onerror) {
+  return function(event) {
+    var db = request.result;
+
+    db.onerror = onerror;
+
+    if (event.oldVersion < 1) {
+      // Version 1 is the first version of the database.
+      db.createObjectStore(DB_STORE);
+    }
+  }
+}
+
 function loadPreviousImagesIfAny(callback) {
-    var STORE = "insta-preview";
-    var request = indexedDB.open("insta-preview", 1.0)
+    var request = indexedDB.open(DB_NAME, DB_VERSION)
     var onerror = function(event) {
       console.error("falling back to defaults becasue of", event)
       callback({})
     }
     request.onerror = onerror;
-
-    request.onupgradeneeded = function(event) {
-      var db = request.result;
-
-      db.onerror = onerror;
-
-      if (event.oldVersion < 1) {
-        // Version 1 is the first version of the database.
-        db.createObjectStore(STORE);
-      }
-    }
+    request.onupgradeneeded = onupgradeneededMaker(onerror);
 
     request.onsuccess = function(event) {
       var db = request.result;
-      var transaction = db.transaction(STORE, "readonly")
+      var transaction = db.transaction(DB_STORE, "readonly")
 
       function consumeImageBlobs(imageBlobs) {
         var promises = imageBlobs.map((pair) => {
@@ -165,14 +171,14 @@ function loadPreviousImagesIfAny(callback) {
             var pair = pairs[i]
             images[pair[0]] = pair[1]
           }
-          console.log(images)
+
           callback(images)
         });
 
       }
 
       var imageBlobs = []
-      transaction.objectStore(STORE).openCursor().onsuccess = function(event) {
+      transaction.objectStore(DB_STORE).openCursor().onsuccess = function(event) {
         var cursor = event.target.result;
         if(cursor) {
           imageBlobs.push([cursor.key, cursor.value]);
@@ -192,8 +198,41 @@ loadPreviousImagesIfAny((loadedImages) => {
     });
 
     app.ports.saveImages.subscribe(function(images) {
-      // TOD0 save images to indexedDB, as Blobs
-      console.log(images)
+      var promises = Object.entries(images)
+        .map((pair) => {
+          return new Promise((resolve, reject) => {
+            var key = pair[0]
+            var url = pair[1]
+
+            fetch(url)
+              .then(res => res.blob().then(blob => resolve([key, blob])))
+          })
+        })
+
+      Promise.all(promises).then((pairs) => {
+        var request = indexedDB.open(DB_NAME, 1.0)
+        var onerror = function(event) {
+          console.error(event)
+        }
+        request.onerror = onerror;
+        request.onupgradeneeded = onupgradeneededMaker(onerror);
+
+        request.onsuccess = function(event) {
+          var db = request.result;
+          var transaction = db.transaction(DB_STORE, "readwrite")
+
+          var objectStore = transaction.objectStore(DB_STORE)
+
+          for (var i = 0; i < pairs.length; i += 1) {
+            var pair = pairs[i]
+
+            var key = pair[0]
+            var blob = pair[1]
+
+            objectStore.put(blob, key);
+          }
+        }
+      });
     });
 })
 </script>
