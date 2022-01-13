@@ -118,10 +118,72 @@
 <script type="text/javascript" src="elm.js"></script>
 <script type="text/javascript">
 function loadPreviousImagesIfAny(callback) {
-    // TOD0 load from indexedDB
-    callback({})
+    var STORE = "insta-preview";
+    var request = indexedDB.open("insta-preview", 1.0)
+    var onerror = function(event) {
+      console.error("falling back to defaults becasue of", event)
+      callback({})
+    }
+    request.onerror = onerror;
+
+    request.onupgradeneeded = function(event) {
+      var db = request.result;
+
+      db.onerror = onerror;
+
+      if (event.oldVersion < 1) {
+        // Version 1 is the first version of the database.
+        db.createObjectStore(STORE);
+      }
+    }
+
+    request.onsuccess = function(event) {
+      var db = request.result;
+      var transaction = db.transaction(STORE, "readonly")
+
+      function consumeImageBlobs(imageBlobs) {
+        var promises = imageBlobs.map((pair) => {
+          return new Promise((resolve, reject) => {
+            var key = pair[0]
+            var blob = pair[1]
+
+            var file = new File([blob], key, blob);
+
+            let fileReader = new FileReader();
+            fileReader.onload = (e) => {
+              resolve([key, fileReader.result])
+            };
+
+            fileReader.readAsDataURL(file);
+          })
+        })
+
+        Promise.all(promises).then((pairs) => {
+          var images = {}
+
+          for (var i = 0; i < pairs.length; i += 1) {
+            var pair = pairs[i]
+            images[pair[0]] = pair[1]
+          }
+          console.log(images)
+          callback(images)
+        });
+
+      }
+
+      var imageBlobs = []
+      transaction.objectStore(STORE).openCursor().onsuccess = function(event) {
+        var cursor = event.target.result;
+        if(cursor) {
+          imageBlobs.push([cursor.key, cursor.value]);
+          cursor.continue()
+        } else {
+          consumeImageBlobs(imageBlobs)
+        }
+      };
+    };
 }
-  
+
 loadPreviousImagesIfAny((loadedImages) => {
     // Start the Elm application.
     var app = Elm.Main.init({
