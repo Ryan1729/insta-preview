@@ -121,8 +121,12 @@ flagsDecoder =
             -- TODO check that it looks like a URL?
             D.maybe D.string
 
+        fieldFor : ImageLocation -> D.Decoder ImageState
         fieldFor location =
-            D.field (locationKey location) imageStateDecoder
+            D.oneOf
+                [ D.field (locationKey location) imageStateDecoder
+                , D.succeed imageDefault
+                ]
     in
     D.succeed Model
         |> andMap (fieldFor Profile)
