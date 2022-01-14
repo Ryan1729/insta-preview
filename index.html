@@ -119,7 +119,7 @@
 <script type="text/javascript">
 var DB_NAME = "insta-preview";
 var DB_STORE = "insta-preview";
-var DB_VERSION = 2;
+var DB_VERSION = 3;
 
 function onupgradeneededMaker(request, onerror) {
   return function(event) {
@@ -136,7 +136,7 @@ function onupgradeneededMaker(request, onerror) {
 function loadPreviousImagesIfAny(callback) {
     var request = indexedDB.open(DB_NAME, DB_VERSION)
     var onerror = function(event) {
-      console.error("falling back to defaults becasue of", event)
+      console.error("falling back to defaults becasue of:\n", request.error)
       callback({})
     }
 
@@ -211,9 +211,9 @@ loadPreviousImagesIfAny((loadedImages) => {
         })
 
       Promise.all(promises).then((pairs) => {
-        var request = indexedDB.open(DB_NAME, 1.0)
+        var request = indexedDB.open(DB_NAME, DB_VERSION)
         var onerror = function(event) {
-          console.error(event)
+          console.error(request.error)
         }
         request.onerror = onerror;
         request.onupgradeneeded = onupgradeneededMaker(request, onerror);
